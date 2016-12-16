@@ -1,28 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/colorBackground">
 
     <TextView
         android:id="@+id/text_view_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dp"
+        android:text="@string/app_name" />
 
     <TextView
         android:id="@+id/text_view_estimated"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/text_view_name"
+        android:layout_toEndOf="@+id/text_view_name"
+        android:layout_margin="5dp"
+        android:text="@string/app_name" />
 
     <TextView
         android:id="@+id/text_view_realized"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/text_view_estimated"
+        android:layout_toEndOf="@+id/text_view_estimated"
+        android:layout_toLeftOf="@+id/image_button_play"
+        android:layout_toStartOf="@+id/image_button_play"
+        android:layout_margin="5dp"
+        android:text="@string/app_name" />
+
     <ImageButton
         android:id="@+id/image_button_play"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:tint="@color/colorButtonTint"
+        android:src="@mipmap/ic_play_arrow"
+        android:contentDescription="@string/description_play_icon"
+        style="@style/Widget.AppCompat.Button.Borderless" />
 
-</LinearLayout>
+    <ImageButton
+        android:id="@+id/image_button_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:tint="@color/colorButtonTint"
+        android:src="@mipmap/ic_stop"
+        android:contentDescription="@string/description_stop_icon"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:visibility="invisible" />
+
+</RelativeLayout>

@@ -22,7 +22,7 @@ public class TaskDAO {
     public static final String STATUS = "status";
 
     public static final String SCRIPT_CREATE_TABLE_TASK = "CREATE TABLE " + TABLE + "("
-            + ID + " BIGINT PRIMARY KEY AUTOINCREMENT," + NAME + " TEXT," + ESTIMATED + " INTEGER,"
+            + ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + NAME + " TEXT," + ESTIMATED + " INTEGER,"
             + REALIZED + " INTEGER," + STATUS + " INTEGER);";
 
     public static final String SCRIPT_DROP_TABLE_TASK = "DROP TABLE IF EXISTS " + TABLE;
@@ -57,7 +57,7 @@ public class TaskDAO {
 
                     do {
                         Task task = new Task();
-                        task.setId(cursor.getLong(indexId));
+                        task.setId(cursor.getInt(indexId));
                         task.setName(cursor.getString(indexName));
                         task.setEstimated(cursor.getInt(indexEstimated));
                         task.setRealized(cursor.getInt(indexRealized));

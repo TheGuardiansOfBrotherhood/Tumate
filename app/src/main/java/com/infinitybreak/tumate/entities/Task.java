@@ -7,7 +7,7 @@ import com.infinitybreak.tumate.enums.TaskStatus;
 
 public class Task implements Parcelable {
 
-    private Long id;
+    private Integer id;
 
     private String name;
 
@@ -21,7 +21,7 @@ public class Task implements Parcelable {
     }
 
     private Task(Parcel in) {
-        setId(in.readLong());
+        setId(in.readInt());
         setName(in.readString());
         setEstimated(in.readInt());
         setRealized(in.readInt());
@@ -40,11 +40,11 @@ public class Task implements Parcelable {
         }
     };
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -111,7 +111,7 @@ public class Task implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(getId());
+        dest.writeInt(getId());
         dest.writeString(getName());
         dest.writeInt(getEstimated());
         dest.writeInt(getRealized());
