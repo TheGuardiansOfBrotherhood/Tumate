@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int stopCoffeeBreak = 1;
     int progressStatus = 0;
     public static int TIME_MAX = 15;
+    Integer position = -1;
 
     MyAsyncTask task;
 
@@ -104,12 +105,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return TIME_MAX;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        chronometerPersist.resumeState();
-    }
-
     private class MyAsyncTask extends AsyncTask<Integer, Integer, Integer> {
         @Override
         protected Integer doInBackground(Integer... params) {
@@ -122,15 +117,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 progressStatus++;
                 publishProgress(progressStatus);
             }
-//            handler.post(new Runnable() {
-//                public void run() {
-//                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-//                    v.vibrate(500);
-//
-//                    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-//                    toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
-//                }
-//            });
             return params[0];
         }
 
@@ -148,13 +134,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             if (mIsStarting) {
                 initThreadProgressBar(position);
+            } else {
+                stopCoffeeBreak = 1;
             }
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     @Override
@@ -171,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void refreshList() {
         mTasks.clear();
         mTasks = TaskDAO.getInstance(this).select();
-        TaskAdapter adapter = new TaskAdapter(this, mTasks, this, mIsStarting);
+        TaskAdapter adapter = new TaskAdapter(this, mTasks, this, mIsStarting, position);
         mRecyclerView.setAdapter(adapter);
     }
 
@@ -181,12 +164,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!mIsStarting) {
             mIsStarting = true;
             imageButton.setImageResource(R.mipmap.ic_stop);
-            Integer position = (Integer) imageButton.getTag();
+            position = (Integer) imageButton.getTag();
             initThreadProgressBar(position);
         } else {
+            position = -1;
             mIsStarting = false;
             imageButton.setImageResource(R.mipmap.ic_play_arrow);
         }
+        refreshList();
     }
 
     private void showDialogAddTask() {
