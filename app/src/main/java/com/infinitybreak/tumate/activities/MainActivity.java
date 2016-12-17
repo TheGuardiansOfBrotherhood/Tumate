@@ -1,16 +1,11 @@
 package com.infinitybreak.tumate.activities;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,12 +38,13 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     ChronometerPersist chronometerPersist;
     SharedPreferences sharedPreferences;
-    int stopCoffeeBreak = 0;
+    int stopCoffeeBreak = 1;
     int progressStatus = 0;
     int progress = 0;
     public static int TIME_MAX = 15;
+    boolean isRunningAsync = true;
 
-    AsyncTask asyncTask;
+    MyAsyncTask task;
     private Handler handler = new Handler();
 
     private RecyclerView mRecyclerView;
@@ -81,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                initThreadProgressBar(0, TIME_MAX);
-                chronometerPersist.startChronometer();
+                initThreadProgressBar(0);
             }
         });
 
@@ -104,15 +99,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void startChronometer() {
         chronometerPersist.startChronometer();
-        initThreadProgressBar(0, TIME_MAX);
+        initThreadProgressBar(0);
     }
 
     public void stopChronometer() {
         chronometerPersist.stopChronometer();
-        progressBar.setProgress(0);
-    }
-
-    public void updateView() {
+        isRunningAsync = false;
+        task = null;
     }
 
     /*
@@ -121,54 +114,74 @@ public class MainActivity extends AppCompatActivity {
     * então 25 min é 1500s
     * e 5 min é 300s
     * */
-    public void initThreadProgressBar(int timeCurrent, final int timeMax) {
+    public void initThreadProgressBar(int timeCurrent){
+        chronometerPersist.startChronometer();
+        isRunningAsync = true;
         progressStatus = timeCurrent;
-        progressBar.setMax(timeMax);
-
-        asyncTask = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(final Void... params) {
-                while (progressStatus < TIME_MAX) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    progressStatus ++;
-                    handler.post(new Runnable() {
-                        public void run() {
-                            progressBar.setProgress(progressStatus);
-                        }
-                    });
-                }
-                handler.post(new Runnable() {
-                    public void run() {
-                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                        v.vibrate(500);
-
-                        ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-                        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
-
-                        chronometerPersist.stopChronometer();
-                        if (stopCoffeeBreak % 4 == 0) {
-                            TIME_MAX = 10;
-                        } else if(stopCoffeeBreak % 2 == 0) {
-                            TIME_MAX = 5;
-                        } else if(stopCoffeeBreak % 2 != 0) {
-                            TIME_MAX = 15;
-                        }
-                    }
-                });
-                return null;
-            }
-        }.execute();
-
-        stopCoffeeBreak++;
+        TIME_MAX = getTimeTotal();
+        progressBar.setProgress(0);
+        progressBar.setMax(TIME_MAX);
+        task = new MyAsyncTask();
+        task.execute(progressStatus);
     }
 
-    @Override protected void onResume() {
+    public int getTimeTotal() {
+        stopCoffeeBreak++;
+        if (stopCoffeeBreak % 8 == 0) {
+            TIME_MAX = 10;
+            stopCoffeeBreak = 1;
+        } else if(stopCoffeeBreak % 2 == 0) {
+            TIME_MAX = 15;
+        } else if(stopCoffeeBreak % 2 != 0) {
+            TIME_MAX = 5;
+        }
+        return TIME_MAX;
+    }
+
+    @Override
+    protected void onResume() {
         super.onResume();
         chronometerPersist.resumeState();
+    }
+
+    private class MyAsyncTask extends AsyncTask<Integer, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+
+            while (isRunningAsync && progressStatus < TIME_MAX) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                progressStatus ++;
+                handler.post(new Runnable() {
+                    public void run() {
+                        progressBar.setProgress(progressStatus);
+                    }
+                });
+            }
+            handler.post(new Runnable() {
+                public void run() {
+//                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+//                    v.vibrate(500);
+
+//                    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+//                    toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+                }
+            });
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            chronometerPersist.stopChronometer();
+            isRunningAsync = false;
+            initThreadProgressBar(0);
+        }
     }
 
     @Override
