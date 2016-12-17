@@ -1,3 +1,16 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="circleProgressRadius">60dp</dimen>
+
+    <dimen name="circleProgressThickness">7dp</dimen>
+
+    <color name="circleProgressCompleteStartGradient">@color/dark_blue</color>
+
+    <color name="circleProgressCompleteEndGradient">@color/coral_blue</color>
+
+    <color name="circleProgressIncompleteStartGradient">@color/light_gray</color>
+
+    <color name="circleProgressIncompleteEndGradient">@color/light_gray</color>
+
 </resources>
