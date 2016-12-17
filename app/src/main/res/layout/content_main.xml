@@ -6,12 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.infinitybreak.tumate.activities.MainActivity"
+    tools:context=".activities.MainActivity"
     tools:showIn="@layout/activity_main"
     android:orientation="vertical"
     android:gravity="center_horizontal">
-
-
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -78,7 +76,10 @@
 
    </LinearLayout>
 
-
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_tasks"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

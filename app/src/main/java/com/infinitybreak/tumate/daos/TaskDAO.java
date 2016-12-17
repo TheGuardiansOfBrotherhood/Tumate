@@ -41,8 +41,8 @@ public class TaskDAO {
         database = persistenceHelper.getWritableDatabase();
     }
 
-    public List<Task> select() {
-        List<Task> tasks = new ArrayList<>();
+    public ArrayList<Task> select() {
+        ArrayList<Task> tasks = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE;
 
         Cursor cursor = database.rawQuery(query, null);

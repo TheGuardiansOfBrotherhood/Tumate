@@ -9,8 +9,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,10 +24,18 @@ import android.widget.Chronometer;
 import android.widget.ProgressBar;
 
 import com.infinitybreak.tumate.R;
+import com.infinitybreak.tumate.adapters.TaskAdapter;
+import com.infinitybreak.tumate.daos.TaskDAO;
+import com.infinitybreak.tumate.entities.Task;
+import com.infinitybreak.tumate.fragments.AddTaskDialogFragment;
+
+import java.util.ArrayList;
 
 import library.minimize.com.chronometerpersist.ChronometerPersist;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG_DIALOG_ADD_TASK = "addTask";
 
     Chronometer chronometer;
     Button buttonStart;
@@ -39,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
     AsyncTask asyncTask;
     private Handler handler = new Handler();
 
+    private RecyclerView mRecyclerView;
+    private ArrayList<Task> mTasks = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,16 +61,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add_task);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                showDialogAddTask();
             }
         });
-
-
 
         progressBar = (ProgressBar) findViewById(R.id.circle_progress_bar);
 
@@ -66,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("ChronometerSample", MODE_PRIVATE);
         chronometerPersist = ChronometerPersist.getInstance(chronometer, sharedPreferences);
 
-
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         buttonStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,34 +93,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_tasks);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-
+        refreshList();
     }
 
-    public void startChronometer(){
+    public void startChronometer() {
         chronometerPersist.startChronometer();
         initThreadProgressBar(0, TIME_MAX);
     }
-    public void stopChronometer(){
+
+    public void stopChronometer() {
         chronometerPersist.stopChronometer();
         progressBar.setProgress(0);
     }
 
-    public void updateView(){
-
-
+    public void updateView() {
     }
-
 
     /*
     * Se 1000 mili segundo é 1 segundo
     * e 1 min é 60 segundo
     * então 25 min é 1500s
     * e 5 min é 300s
-    *
     * */
-    public void initThreadProgressBar(int timeCurrent, final int timeMax){
-
+    public void initThreadProgressBar(int timeCurrent, final int timeMax) {
         progressStatus = timeCurrent;
         progressBar.setMax(timeMax);
 
@@ -140,15 +150,13 @@ public class MainActivity extends AppCompatActivity {
                         toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
 
                         chronometerPersist.stopChronometer();
-                        if(stopCoffeeBreak % 4 == 0){
+                        if (stopCoffeeBreak % 4 == 0) {
                             TIME_MAX = 10;
-                        }else if(stopCoffeeBreak % 2 == 0){
+                        } else if(stopCoffeeBreak % 2 == 0) {
                             TIME_MAX = 5;
-                        } else if(stopCoffeeBreak % 2 != 0){
+                        } else if(stopCoffeeBreak % 2 != 0) {
                             TIME_MAX = 15;
                         }
-
-
                     }
                 });
                 return null;
@@ -161,34 +169,34 @@ public class MainActivity extends AppCompatActivity {
     @Override protected void onResume() {
         super.onResume();
         chronometerPersist.resumeState();
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected(item);
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+    public void refreshList() {
+        mTasks.clear();
+        mTasks = TaskDAO.getInstance(this).select();
+        TaskAdapter adapter = new TaskAdapter(this, mTasks, null, null);
+        mRecyclerView.setAdapter(adapter);
+    }
 
-        return super.onOptionsItemSelected(item);
+    private void showDialogAddTask() {
+        DialogFragment dialogFragment = new AddTaskDialogFragment();
+        dialogFragment.setCancelable(false);
+        dialogFragment.show(getSupportFragmentManager(), TAG_DIALOG_ADD_TASK);
     }
 }

@@ -1,3 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="hint_task_name">Nome da tarefa</string>
+    <string name="hint_task_estimated">Estimado</string>
+
+    <string name="error_task_name_required">Nome da tarefa é obrigatório</string>
+    <string name="error_task_estimated_required">Estimado é obrigatório</string>
+
+    <string name="message_loading">Carregando</string>
 </resources>
