@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_main"
@@ -40,41 +41,9 @@
             android:layout_height="250dp"
             android:textSize="45sp"
             android:textColor="@color/colorAccent"
-            android:gravity="center"/>
+            android:gravity="center" />
 
     </RelativeLayout>
-
-                <!--<ProgressBar-->
-                    <!--android:id="@+id/circle_progress_foreground"-->
-                    <!--style="?android:attr/progressBarStyleHorizontal"-->
-                    <!--android:layout_width="250dp"-->
-                    <!--android:layout_height="273dp"-->
-                    <!--android:indeterminate="false"-->
-                    <!--android:max="48"-->
-                    <!--android:progress="45"-->
-                    <!--android:progressDrawable="@drawable/circle_progress_foreground" />-->
-
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="horizontal"
-       android:gravity="center">
-
-       <Button
-           android:id="@+id/start_button"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_margin="5dp"
-           android:text="iniciar tarefa"/>
-
-       <Button
-           android:id="@+id/stop_button"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_margin="5dp"
-           android:text="terminar tarefa" />
-
-   </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_tasks"

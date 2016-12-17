@@ -16,16 +16,15 @@ import java.util.ArrayList;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     private Context mContext;
-    private View.OnClickListener mListenerPlay;
-    private View.OnClickListener mListenerStop;
+    private View.OnClickListener mListener;
     private ArrayList<Task> mTasks = new ArrayList<>();
+    private boolean mIsStarting;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextViewName;
         public TextView mTextViewEstimated;
         public TextView mTextViewRealized;
-        public ImageButton mImageButtonPlay;
-        public ImageButton mImageButtonStop;
+        public ImageButton mImageButtonPlayOrStop;
 
         public ViewHolder(View view) {
             super(view);
@@ -33,17 +32,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             mTextViewName = (TextView) view.findViewById(R.id.text_view_name);
             mTextViewEstimated = (TextView) view.findViewById(R.id.text_view_estimated);
             mTextViewRealized = (TextView) view.findViewById(R.id.text_view_realized);
-            mImageButtonPlay = (ImageButton) view.findViewById(R.id.image_button_play);
-            mImageButtonStop = (ImageButton) view.findViewById(R.id.image_button_stop);
+            mImageButtonPlayOrStop = (ImageButton) view.findViewById(R.id.image_button_play_or_stop);
         }
     }
 
-    public TaskAdapter(Context context, ArrayList<Task> tasks,
-                       View.OnClickListener listenerPlay, View.OnClickListener listenerStop) {
+    public TaskAdapter(Context context, ArrayList<Task> tasks, View.OnClickListener listener,
+                       boolean isStarting) {
         mContext = context;
         mTasks = tasks;
-        mListenerPlay = listenerPlay;
-        mListenerStop = listenerStop;
+        mListener = listener;
+        mIsStarting = isStarting;
     }
 
     @Override
@@ -62,8 +60,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         holder.mTextViewEstimated.setText(String.valueOf(task.getEstimated()));
         holder.mTextViewRealized.setText(String.valueOf(task.getRealized()));
 
-        holder.mImageButtonPlay.setOnClickListener(mListenerPlay);
-        holder.mImageButtonStop.setOnClickListener(mListenerStop);
+        holder.mImageButtonPlayOrStop.setOnClickListener(mListener);
+        holder.mImageButtonPlayOrStop.setTag(position);
+        if (mIsStarting) {
+            holder.mImageButtonPlayOrStop.setImageResource(R.mipmap.ic_stop);
+        } else {
+            holder.mImageButtonPlayOrStop.setImageResource(R.mipmap.ic_play_arrow);
+        }
     }
 
     @Override

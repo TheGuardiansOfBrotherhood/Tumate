@@ -6,4 +6,9 @@
     <color name="colorBackground">#FAFAFA</color>
     <color name="colorDivider">#E0E0E0</color>
     <color name="colorButtonTint">#9E9E9E</color>
+
+    <color name="circleProgressCompleteStartGradient">#388E3C</color>
+    <color name="circleProgressCompleteEndGradient">#4CAF50</color>
+    <color name="circleProgressIncompleteStartGradient">#9E9E9E</color>
+    <color name="circleProgressIncompleteEndGradient">#9E9E9E</color>
 </resources>

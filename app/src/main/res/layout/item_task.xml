@@ -31,32 +31,20 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/text_view_estimated"
         android:layout_toEndOf="@+id/text_view_estimated"
-        android:layout_toLeftOf="@+id/image_button_play"
-        android:layout_toStartOf="@+id/image_button_play"
+        android:layout_toLeftOf="@+id/image_button_play_or_stop"
+        android:layout_toStartOf="@+id/image_button_play_or_stop"
         android:layout_margin="5dp"
         android:text="@string/app_name" />
 
     <ImageButton
-        android:id="@+id/image_button_play"
+        android:id="@+id/image_button_play_or_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:tint="@color/colorButtonTint"
         android:src="@mipmap/ic_play_arrow"
-        android:contentDescription="@string/description_play_icon"
+        android:contentDescription="@string/description_play_or_stop_icon"
         style="@style/Widget.AppCompat.Button.Borderless" />
-
-    <ImageButton
-        android:id="@+id/image_button_stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:tint="@color/colorButtonTint"
-        android:src="@mipmap/ic_stop"
-        android:contentDescription="@string/description_stop_icon"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:visibility="invisible" />
 
 </RelativeLayout>
